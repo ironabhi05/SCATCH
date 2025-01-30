@@ -1,0 +1,63 @@
+<%- include('./partials/header') %>
+
+<div class="w-full h-screen flex">
+    <!-- Sidebar Navigation -->
+    <div class="w-1/4 bg-gray-800 text-white h-full p-5">
+        <h2 class="text-2xl font-semibold mb-5">Admin Panel</h2>
+        <ul class="space-y-3">
+            <li>
+                <a href="/admin/users" class="block py-2 px-4 rounded bg-gray-700 hover:bg-gray-600">Manage Users</a>
+            </li>
+            <li>
+                <a href="/owners/create/product" class="block py-2 px-4 rounded hover:bg-gray-700">Manage Products</a>
+            </li>
+            <li>
+                <a href="/admin/orders" class="block py-2 px-4 rounded hover:bg-gray-700">Manage Orders</a>
+            </li>
+            <li>
+                <a href="/admin/settings" class="block py-2 px-4 rounded hover:bg-gray-700">Settings</a>
+            </li>
+            <li>
+                <a href="/owners/admin/logout" class="block py-2 px-4 rounded text-center w-40 bg-red-500 hover:bg-red-600 mt-10 ms-14">Logout</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="w-3/4 p-8 bg-gray-100">
+        <h1 class="text-3xl font-bold mb-6">Manage Users</h1>
+        
+        <!-- Users Table -->
+        <div class="bg-white shadow-md rounded-lg p-6">
+            <table class="min-w-full bg-white">
+                <thead class="bg-gray-200 text-gray-700">
+                    <tr>
+                        <th class="py-2 px-4 text-left">Full Name</th>
+                        <th class="py-2 px-4 text-left">Email</th>
+                        <th class="py-2 px-4 text-left">Registration Date</th>
+                        <th class="py-2 px-4 text-left">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% users.forEach(user => { %>
+                        <tr class="border-t">
+                            <td class="py-2 px-4"><%= user.fullname %></td>
+                            <td class="py-2 px-4"><%= user.email %></td>
+                            <td class="py-2 px-4"><%= user.createdAt.toISOString().split('T')[0] %></td>
+                            <td class="py-2 px-4">
+                                <!-- Edit and Delete Buttons -->
+                                <a href="/admin/users/edit/<%= user.id %>" class="text-blue-500 hover:underline">Edit</a>
+                                |
+                                <form action="/admin/users/delete/<%= user.id %>" method="POST" class="inline-block">
+                                    <button type="submit" class="text-red-500 hover:underline">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<%- include('./partials/footer') %>

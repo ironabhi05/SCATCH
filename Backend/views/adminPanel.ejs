@@ -1,0 +1,89 @@
+<%- include('./partials/header') %>
+    <div class="w-full h-screen flex">
+        <!-- Sidebar Navigation -->
+        <div class="w-1/4 bg-gray-800 text-white h-full p-5">
+            <h2 class="text-2xl font-semibold mb-5">Admin Panel</h2>
+            <ul class="space-y-3">
+                <li>
+                    <a href="/owners/admin/users" class="block py-2 px-4 rounded hover:bg-gray-700">Manage Users</a>
+                </li>
+                <li>
+                    <a href="/products/create" class="block py-2 px-4 rounded hover:bg-gray-700">Manage Products</a>
+                </li>
+                <li>
+                    <a href="/admin/orders" class="block py-2 px-4 rounded hover:bg-gray-700">Manage Orders</a>
+                </li>
+                <li>
+                    <a href="/admin/settings" class="block py-2 px-4 rounded hover:bg-gray-700">Settings</a>
+                </li>
+                <li>
+                    <a href="/owners/admin/logout"
+                        class="block py-2 px-4 rounded text-center w-40 bg-red-500 hover:bg-red-600 mt-10 ms-14">Logout</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="w-3/4 p-8 bg-gray-100">
+            <h1 class="text-3xl font-bold mb-6">Welcome, Admin</h1>
+            <div class="grid grid-cols-3 gap-6">
+                <!-- Users Card -->
+                <div class="bg-white shadow-md rounded-lg p-6">
+                    <h3 class="text-xl font-semibold mb-2">Total Users</h3>
+                    <p class="text-4xl font-bold text-blue-500">
+                        <%=users.length%>
+                    </p>
+                    <a href="#" class="block mt-4 text-blue-600 hover:underline">View Details</a>
+                </div>
+
+                <!-- Products Card -->
+                <div class="bg-white shadow-md rounded-lg p-6">
+                    <h3 class="text-xl font-semibold mb-2">Total Products</h3>
+                    <p class="text-4xl font-bold text-green-500">
+                        <%=products.length%>
+                    </p>
+                    <a href="#" class="block mt-4 text-green-600 hover:underline">View Details</a>
+                </div>
+
+                <!-- Orders Card -->
+                <div class="bg-white shadow-md rounded-lg p-6">
+                    <h3 class="text-xl font-semibold mb-2">Total Orders</h3>
+                    <p class="text-4xl font-bold text-purple-500">
+                        <%= orders.length%>
+                    </p>
+                    <a href="#" class="block mt-4 text-purple-600 hover:underline">View Details</a>
+                </div>
+            </div>
+
+            <!-- Recent Activity Section -->
+            <h2 class="text-2xl font-bold mt-10 mb-4">Recent Activity</h2>
+            <table class="w-full bg-white shadow-md rounded-lg">
+                <thead class="bg-gray-200 text-gray-700">
+                    <tr>
+                        <th class="py-2 px-4">Activity</th>
+                        <th class="py-2 px-4">Date</th>
+                        <th class="py-2 px-4">Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="py-2 px-4">New User Registered</td>
+                        <td class="py-2 px-4">2025-01-27</td>
+                        <td class="py-2 px-4">Name: John Doe</td>
+                    </tr>
+                    <tr class="bg-gray-100">
+                        <td class="py-2 px-4">Product Added</td>
+                        <td class="py-2 px-4">2025-01-26</td>
+                        <td class="py-2 px-4">Product: iPhone 15</td>
+                    </tr>
+                    <tr>
+                        <td class="py-2 px-4">Order Placed</td>
+                        <td class="py-2 px-4">2025-01-25</td>
+                        <td class="py-2 px-4">Order ID: #12345</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <%- include('./partials/footer') %>
