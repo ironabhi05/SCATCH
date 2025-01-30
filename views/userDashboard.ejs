@@ -1,0 +1,61 @@
+<%- include('./partials/header') %>
+
+<div class="min-h-screen flex flex-col bg-gray-100">
+
+    <div class="flex flex-grow">
+        <!-- Sidebar -->
+        <aside class="w-1/4 bg-white shadow-md p-6">
+            <h2 class="text-lg font-semibold mb-4">User Dashboard</h2>
+            <ul class="space-y-3">
+                <li><a href="/shop" class="block p-2 rounded hover:bg-gray-200">Home</a></li>
+                <li><a href="/orders" class="block p-2 rounded hover:bg-gray-200">My Orders</a></li>
+                <li><a href="/settings" class="block p-2 rounded hover:bg-gray-200">Settings</a></li>
+                <li><a href="/help" class="block p-2 rounded hover:bg-gray-200">Help</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-grow bg-white p-8 shadow-md ml-4">
+            <h2 class="text-xl font-bold mb-4">Welcome, <%= user.fullname %>!</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Card 1 -->
+                <div class="bg-blue-500 text-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-lg font-semibold">Total Orders</h3>
+                    <p class="text-2xl font-bold mt-2"><%=user.cart.length%></p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="bg-green-500 text-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-lg font-semibold">Account Balance</h3>
+                    <p class="text-2xl font-bold mt-2">$200</p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="bg-yellow-500 text-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-lg font-semibold">Support Tickets</h3>
+                    <p class="text-2xl font-bold mt-2">3</p>
+                </div>
+            </div>
+
+            <!-- Recent Activity Section -->
+            <section class="mt-8">
+                <h3 class="text-lg font-semibold mb-4">Recent Activity</h3>
+                <% if (user.recentActivities && user.recentActivities.length > 0) { %>
+                    <ul class="space-y-3">
+                        <% user.recentActivities.forEach(activity => { %>
+                            <li class="bg-gray-100 p-4 rounded shadow-md">
+                                <p><%= activity.message %></p>
+                                <span class="text-sm text-gray-500"><%= activity.date %></span>
+                            </li>
+                        <% }) %>
+                    </ul>
+                <% } else { %>
+                    <p class="text-gray-500">No recent activity to display.</p>
+                <% } %>
+            </section>
+        </main>
+    </div>
+</div>
+
+<%- include('./partials/footer') %>
