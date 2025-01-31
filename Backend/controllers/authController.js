@@ -40,6 +40,7 @@ module.exports.adminLogin = async (req, res) => {
     bcrypt.compare(password, isAdmin.password, (err, result) => {
         if (result) {
             let token = generateAdminToken(isAdmin);
+            req.flash("success", "Welcome Admin");
             res.cookie("token", token);
             return res.redirect('/owners/admin/panel');
         }

@@ -58,9 +58,9 @@ module.exports.userLogin = async (req, res) => {
 
 module.exports.getUser = (req, res) => {
     if (req.user) {
-        res.render("userDashboard", { user: req.user });
+        return res.render("userDashboard", { user: req.user });
     } else {
-        res.redirect("/");
+        return res.redirect("/");
     }
 };
 

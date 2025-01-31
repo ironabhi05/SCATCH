@@ -18,6 +18,11 @@ app.use(
         resave: false,
         saveUninitialized: false,
         secret: process.env.EXPRESS_SESSION_SECRET,
+        cookie: {
+            httpOnly: true,
+            secure: false,
+            maxAge: 3600000,
+        }
     })
 );
 app.use(flash());

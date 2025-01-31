@@ -5,35 +5,58 @@ const productModel = require('../models/product-model');
 const userModel = require('../models/user-model');
 const orderModel = require('../models/order-model');
 
+//User Create and Login Page
 router.get('/', (req, res) => {
-    let error = req.flash("error");
-    const { adminLoggedin = false, loggedin = false } = req.session;
-    return res.render("index", { error, adminLoggedin, loggedin });
+    try {
+        let error = req.flash("error");
+        const { loggedin = false } = req.session;
+        return res.render("index", { error, loggedin });
+    }
+    catch {
+        return res.status(500).send('Hmmm! Something went wrong....');
+    }
 });
 
+//User Home Screen for shopping
+router.get('/shop', isLoggedIn, async (req, res) => {
+    try {
+        let products = await productModel.find();
+        let success = req.flash("success");
+        let error = req.flash("error");
+        return res.render("shop", { products, success, error });
+    }
+    catch {
+        return res.status(500).send('Hmmm! Something went wrong....');
+    }
+});
+
+//Add items to cart Page
 router.get('/addtocart/:productid', isLoggedIn, async (req, res) => {
-    let user = await userModel.findOne({ email: req.user.email });
-    user.cart.push(req.params.productid);
-    await user.save();
-    req.flash("success", "Item added to cart");
-    return res.redirect('/shop');
+    try {
+        let user = await userModel.findOne({ email: req.user.email });
+        user.cart.push(req.params.productid);
+        await user.save();
+        req.flash("success", "Item Added To Your Cart");
+        return res.redirect('/shop');
+    }
+    catch {
+        req.flash("error", "Hmmm! Something went wrong....");
+        return res.redirect('/shop');
+    }
 });
 
 router.get('/cart', isLoggedIn, async (req, res) => {
-    let user = await userModel.findOne({ email: req.user.email }).populate("cart");
-    let product = await productModel.findOne();
-    return res.render('cart', { user, product });
+    try {
+        let user = await userModel.findOne({ email: req.user.email }).populate("cart");
+        let product = await productModel.findById();
+        return res.render('cart', { user, product });
+    }
+    catch {
+        return res.status(500).send('Hmmm! Something went wrong....');
+    }
 });
 
-router.get('/shop', isLoggedIn, async (req, res) => {
-    let products = await productModel.find();
-    let success = req.flash("successs");
-    return res.render("shop", { products, success });
-});
-
-router.post('/product/:id', (req, res) => {
-    res.send("product");
-});
+//Pending Order Place System
 
 router.post('/order-place', isLoggedIn, async (req, res) => {
     try {
@@ -79,8 +102,8 @@ router.post('/order-place', isLoggedIn, async (req, res) => {
         user.cart = user.cart.filter(product => !productIds.includes(product._id.toString()));
 
         await user.save();
-
-        return res.redirect('/cart');
+        req.flash("success", "Order Placed")
+        return res.redirect('/shop');
     } catch (error) {
         console.error('Error placing order:', error);
         return res.status(500).json({ message: 'Internal server error' });

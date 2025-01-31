@@ -12,20 +12,18 @@
 <body class="font-['helvetica_now_display']">
     <nav class="w-full flex bg-blue-400 justify-between px-5 py-3">
         <h3 class="text-xl">Scatch</h3>
-        <% var loggedin=typeof loggedin !=="undefined" ? loggedin : true %>
-            <% if(loggedin){%>
+
+        <% var loggedin=typeof loggedin !=="undefined" ? loggedin : true; %>
+            <% if (loggedin) { %>
                 <div class="flex gap-5">
                     <a href="/shop">Shop</a>
                     <a href="/cart">Cart</a>
                     <a href="/users/profile">My Account</a>
                     <a class="text-red-600" href="/users/logout">Logout</a>
                 </div>
-                <%}%>
-                    <% var adminLoggedin=typeof adminLoggedin !=="undefined" ? adminLoggedin : true %>
-                        <% if(adminLoggedin){%>
-                            <div class="flex gap-5"></div>
-                            <a class="text-red-600" href="/owners/admin/logout">Logout</a>
-                            </div>
-                            <%}%>
+                <% } %>
 
     </nav>
+</body>
+
+</html>

@@ -22,22 +22,23 @@ router.get('/admin/logout', isAdminLoggedIn, (req, res) => {
 router.get('/admin/login', (req, res) => {
     let error = req.flash("error")
     const { adminLoggedin = false, loggedin = false } = req.session;
-    res.render('adminLogin', { error, adminLoggedin, loggedin })
+    res.render('adminLogin', { error, loggedin })
 });
 
 router.get('/admin/panel', isAdminLoggedIn, async (req, res) => {
     let products = await productModel.find();
     let users = await userModel.find();
     let orders = await orderModel.find();
-    const { adminLoggedin = false, loggedin = false } = req.session;
-    res.render('adminPanel', { users, products, orders, adminLoggedin, loggedin });
+    let success = req.flash("success");
+    const { loggedin = false } = req.session;
+    res.render('adminPanel', { users, products, orders, success, loggedin });
 });
 
 //pending
 router.get('/admin/users', isAdminLoggedIn, async (req, res) => {
     let users = await userModel.find();
-    const { adminLoggedin = false, loggedin = false } = req.session;
-    res.render('showUsers', { users, adminLoggedin, loggedin });
+    const { loggedin = false } = req.session;
+    res.render('showUsers', { users, loggedin });
 });
 
 
