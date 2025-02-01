@@ -18,12 +18,13 @@ router.get('/', (req, res) => {
 });
 
 //User Home Screen for shopping
-router.get('/shop', isLoggedIn, async (req, res) => {
+router.get('/shop', async (req, res) => {
     try {
+        const { loggedin = false } = req.session;
         let products = await productModel.find();
         let success = req.flash("success");
         let error = req.flash("error");
-        return res.render("shop", { products, success, error });
+        return res.render("shop", { products, success, error, isAdminLoggedIn: loggedin });
     }
     catch {
         return res.status(500).send('Hmmm! Something went wrong....');
@@ -56,54 +57,52 @@ router.get('/cart', isLoggedIn, async (req, res) => {
     }
 });
 
-//Pending Order Place System
-
+//Place Order
 router.post('/order-place', isLoggedIn, async (req, res) => {
     try {
-        // Convert ObjectId values in the cart to strings
-        const productIds = req.user.cart.map(id => id.toString());
-
-        // Fetch the user with a populated cart
+        // User fetch with populated cart
         const user = await userModel.findOne({ email: req.user.email }).populate('cart');
 
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+        if (!user || user.cart.length === 0) {
+            return res.status(400).json({ message: 'No products in cart to place an order' });
         }
 
-        // Filter the cart to include only selected products
-        const selectedProducts = user.cart.filter(product =>
-            productIds.includes(product._id.toString())  // Corrected condition
-        );
+        // Find existing order for the user
+        let order = await orderModel.findOne({ user: user._id });
 
-        if (selectedProducts.length === 0) {
-            return res.status(400).json({ message: 'No valid products selected' });
-        }
-
-        // Calculate total amount for selected products
-        const totalAmount = selectedProducts.reduce((sum, product) => sum + product.price, 0);
-
-        // Create order items for the selected products
-        const orderItems = selectedProducts.map(product => ({
+        // Prepare cart items
+        const newItems = user.cart.map(product => ({
             product: product._id,
-            quantity: 1, // Assuming each product has a quantity of 1
+            quantity: 1,
             price: product.price
         }));
 
-        // Create the order
-        const order = new orderModel({
-            user: user._id,
-            items: orderItems,
-            totalAmount: totalAmount
-        });
+        if (order) {
+            // User's order exists, push cart products into existing order's items
+            order.items.push(...newItems);
 
-        await order.save();
+            // Update total amount
+            order.totalAmount += newItems.reduce((sum, item) => sum + item.price, 0);
 
-        // Remove selected products from the user's cart
-        user.cart = user.cart.filter(product => !productIds.includes(product._id.toString()));
+            await order.save();
+        } else {
+            // No order exists, create a new one
+            order = new orderModel({
+                user: user._id,
+                items: newItems,
+                totalAmount: newItems.reduce((sum, item) => sum + item.price, 0)
+            });
 
+            await order.save();
+        }
+
+        // Empty user cart after order placement
+        user.cart = [];
         await user.save();
-        req.flash("success", "Order Placed")
+
+        req.flash("success", "Order Placed Successfully!");
         return res.redirect('/shop');
+
     } catch (error) {
         console.error('Error placing order:', error);
         return res.status(500).json({ message: 'Internal server error' });

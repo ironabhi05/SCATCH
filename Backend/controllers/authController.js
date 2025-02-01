@@ -42,6 +42,8 @@ module.exports.adminLogin = async (req, res) => {
             let token = generateAdminToken(isAdmin);
             req.flash("success", "Welcome Admin");
             res.cookie("token", token);
+            req.session.loggedin = true;
+            req.session.adminLoggedin = true;
             return res.redirect('/owners/admin/panel');
         }
         else {

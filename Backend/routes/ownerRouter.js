@@ -21,26 +21,71 @@ router.get('/admin/logout', isAdminLoggedIn, (req, res) => {
 
 router.get('/admin/login', (req, res) => {
     let error = req.flash("error")
-    const { adminLoggedin = false, loggedin = false } = req.session;
+    const { loggedin = false } = req.session;
     res.render('adminLogin', { error, loggedin })
 });
 
 router.get('/admin/panel', isAdminLoggedIn, async (req, res) => {
-    let products = await productModel.find();
-    let users = await userModel.find();
-    let orders = await orderModel.find();
-    let success = req.flash("success");
-    const { loggedin = false } = req.session;
-    res.render('adminPanel', { users, products, orders, success, loggedin });
+    try {
+        let products = await productModel.find();
+        let users = await userModel.find();
+        let orders = await orderModel.find();
+        let success = req.flash("success");
+        const { loggedin = false } = req.session;
+        res.render('adminPanel', { users, products, orders, success, loggedin });
+    }
+    catch {
+        console.error("Error fetching user orders:", error);
+        res.status(500).send("Internal Server Error");
+    }
 });
 
-//pending
 router.get('/admin/users', isAdminLoggedIn, async (req, res) => {
-    let users = await userModel.find();
-    const { loggedin = false } = req.session;
-    res.render('showUsers', { users, loggedin });
+    try {
+        // Get all users
+        let users = await userModel.find();
+
+        // Get orders for all users
+        let orders = await orderModel.find({ user: { $in: users.map(u => u._id) } }).populate('items.product');
+
+        // Map orders to each user
+        let userOrders = users.map(user => {
+            // Get orders for each user
+            let userOrdersList = orders.filter(order => order.user.toString() === user._id.toString());
+
+            // For each order, add item length to the order
+            userOrdersList = userOrdersList.map(order => {
+                return {
+                    ...order.toObject(),
+                    itemCount: order.items.length // Add item count to the order
+                };
+            });
+
+            return {
+                user,
+                orders: userOrdersList // Return the user with their orders and item counts
+            };
+        });
+
+        const { loggedin = false } = req.session;
+        res.render('showUsers', { users, loggedin, userOrders });
+    } catch (error) {
+        console.error("Error fetching user orders:", error);
+        res.status(500).send("Internal Server Error");
+    }
 });
 
+router.delete('/delete-user/:userid',isAdminLoggedIn, async (req, res) => {
+    const { userid } = req.params;
+    await userModel.findByIdAndDelete(userid    );
+    res.redirect('/owners/admin/panel');
+});
+
+router.delete('/delete-product/:productid',isAdminLoggedIn, async (req, res) => {
+    const { productid } = req.params;
+    await productModel.findByIdAndDelete(productid);
+    res.redirect('/shop');
+});
 
 module.exports = router;
 

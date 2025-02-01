@@ -9,7 +9,7 @@
     <div class="w-full h-screen flex">
         <!-- Sidebar Navigation -->
         <div class="w-1/4 bg-gray-800 text-white h-full p-5">
-            <h2 class="text-2xl font-semibold mb-5">Admin Panel</h2>
+            <h2 class="text-2xl font-semibold mb-5"><a href="/owners/admin/panel" class="block py-2 px-4 rounded hover:bg-gray-700">Admin Panel</a></h2>
             <ul class="space-y-3">
                 <li>
                     <a href="/owners/admin/users" class="block py-2 px-4 rounded hover:bg-gray-700">Manage Users</a>
@@ -40,7 +40,7 @@
                     <p class="text-4xl font-bold text-blue-500">
                         <%=users.length%>
                     </p>
-                    <a href="#" class="block mt-4 text-blue-600 hover:underline">View Details</a>
+                    <a href="/owners/admin/users" class="block mt-4 text-blue-600 hover:underline">View Details</a>
                 </div>
 
                 <!-- Products Card -->
@@ -49,7 +49,7 @@
                     <p class="text-4xl font-bold text-green-500">
                         <%=products.length%>
                     </p>
-                    <a href="#" class="block mt-4 text-green-600 hover:underline">View Details</a>
+                    <a href="/shop" class="block mt-4 text-green-600 hover:underline">View Details</a>
                 </div>
 
                 <!-- Orders Card -->
