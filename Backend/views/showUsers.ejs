@@ -1,83 +1,106 @@
 <%- include('./partials/header') %>
 
-    <div class="w-full h-screen flex">
-        <!-- Sidebar Navigation -->
-        <div class="w-1/4 bg-gray-800 text-white h-full p-5">
-            <h2 class="text-2xl font-semibold mb-5"><a href="/owners/admin/panel"
-                    class="block py-2 px-4 rounded hover:bg-gray-700">Admin Panel</a></h2>
-            <ul class="space-y-3">
-                <li>
-                    <a href="/owners/admin/users" class="block py-2 px-4 rounded bg-gray-700 hover:bg-gray-600">Manage
-                        Users</a>
-                </li>
-                <li>
-                    <a href="/products/create" class="block py-2 px-4 rounded hover:bg-gray-700">Manage
-                        Products</a>
-                </li>
-                <li>
-                    <a href="/admin/orders" class="block py-2 px-4 rounded hover:bg-gray-700">Manage Orders</a>
-                </li>
-                <li>
-                    <a href="/admin/settings" class="block py-2 px-4 rounded hover:bg-gray-700">Settings</a>
-                </li>
-                <li>
-                    <a href="/owners/admin/logout"
-                        class="block py-2 px-4 rounded text-center w-40 bg-red-500 hover:bg-red-600 mt-10 ms-14">Logout</a>
-                </li>
-            </ul>
-        </div>
+<div class="w-full h-screen flex">
+  <!-- Sidebar Navigation -->
+  <div class="w-1/4 bg-gray-800 text-white h-full p-5">
+    <h2 class="text-2xl font-semibold mb-5">
+      <a
+        href="/owners/admin/panel"
+        class="block py-2 px-4 rounded hover:bg-gray-700"
+        >Admin Panel</a
+      >
+    </h2>
+    <ul class="space-y-3">
+      <li>
+        <a
+          href="/owners/admin/users"
+          class="block py-2 px-4 rounded bg-gray-700 hover:bg-gray-600"
+          >Manage Users</a
+        >
+      </li>
+      <li>
+        <a
+          href="/products/create"
+          class="block py-2 px-4 rounded hover:bg-gray-700"
+          >Manage Products</a
+        >
+      </li>
+      <li>
+        <a
+          href="/admin/orders"
+          class="block py-2 px-4 rounded hover:bg-gray-700"
+          >Manage Orders</a
+        >
+      </li>
+      <li>
+        <a href="#" class="block py-2 px-4 rounded hover:bg-gray-700"
+          >Settings</a
+        >
+      </li>
+      <li>
+        <a
+          href="/owners/admin/logout"
+          class="block py-2 px-4 rounded text-center w-40 bg-red-500 hover:bg-red-600 mt-10 ms-14"
+          >Logout</a
+        >
+      </li>
+    </ul>
+  </div>
 
-        <!-- Main Content -->
-        <div class="w-3/4 p-8 bg-gray-100">
-            <h1 class="text-3xl font-bold mb-6">Manage Users</h1>
+  <!-- Main Content -->
+  <div class="w-3/4 p-8 bg-gray-100">
+    <h1 class="text-3xl font-bold mb-6">Manage Users</h1>
 
-            <!-- Users Table -->
-            <div class="bg-white shadow-md rounded-lg p-6">
-                <table class="min-w-full bg-white">
-                    <thead class="bg-gray-200 text-gray-700">
-                        <tr>
-                            <th class="py-2 px-4 text-left">Full Name</th>
-                            <th class="py-2 px-4 text-left">Email</th>
-                            <th class="py-2 px-4 text-left">Order</th>
-                            <th class="py-2 px-4 text-left">Status</th>
-                            <th class="py-2 px-4 text-left">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% userOrders.forEach(userOrder=> { %>
-                            <tr>
-                                <td>
-                                    <%= userOrder.user.fullname %>
-                                </td> <!-- Display user's name -->
-                                <td>
-                                    <%= userOrder.user.email %>
-                                </td>
-                                <% userOrder.orders.forEach(order=> { %>
-                                    <td>
-                                        <%= order.itemCount %>
-                                    </td> <!-- Item count for this order -->
-                                    <td>
-                                        <%= order.status %>
-                                    </td> <!-- Order status -->
-                                    <% }) %>
+    <!-- Users Table -->
+    <div class="bg-white shadow-md rounded-lg p-4">
+      <table class="min-w-full bg-white">
+        <thead class="bg-gray-200 text-gray-700 text-left">
+          <tr>
+            <th class="py-2 px-2">Full Name</th>
+            <th class="py-2 px-3">Email</th>
+            <th class="py-2 px-1">Order</th>
+            <th class="py-2 px-2">Status</th>
+            <th class="py-2 px-2">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="text-left">
+          <% userOrders.forEach(userOrder => { %>
+          <tr>
+            <td><%= userOrder.user.fullname %></td>
+            <!-- Display user's name -->
+            <td><%= userOrder.user.email %></td>
+            <% if (userOrder.orders.length > 0) { %>
+            <%userOrder.orders.forEach(order => { %>
+            <td><%= order.itemCount %></td>
+            <td><%= order.status %></td>
+            <% }) %> <% } else { %>
+            <td>0</td>
+            <td>No Orders</td>
+            <% } %>
 
-                                        <td class="py-2 px-4">
-                                            <!-- Edit and Delete Buttons -->
-                                            <a href="/admin/users/edit/<%= userOrder.user._id %>"
-                                                class="text-blue-500 hover:underline">Edit</a>
-                                            |
-                                            <form action="/owners/delete-user/<%= userOrder.user._id %>?_method=DELETE" method="POST"
-                                                class="inline-block">
-                                                <button type="submit"
-                                                    class="text-red-500 hover:underline">Delete</button>
-                                            </form>
-                                        </td>
-                            </tr>
-                            <% }) %>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+            <td class="py-2 px-4">
+              <a
+                href="/admin/users/edit/<%= userOrder.user._id %>"
+                class="text-blue-500 hover:underline"
+                >Edit</a
+              >
+              |
+              <form
+                action="/owners/delete-user/<%= userOrder.user._id %>?_method=DELETE"
+                method="POST"
+                class="inline-block"
+              >
+                <button type="submit" class="text-red-500 hover:underline">
+                  Delete
+                </button>
+              </form>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
     </div>
+  </div>
+</div>
 
-    <%- include('./partials/footer') %>
+<%- include('./partials/footer') %>
